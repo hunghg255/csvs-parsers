@@ -22,7 +22,8 @@
     "size": "npm run build && size-limit",
     "check-types": "tsc --noEmit true",
     "build": "del-cli 'dist/*' && microbundle build --entry src/index.ts --name csvs-parsers --tsconfig tsconfig.build.json",
-    "dev": "microbundle -w"
+    "dev": "microbundle -w",
+    "release": "changeset publish"
   },
   "keywords": [
     "csv",
