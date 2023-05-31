@@ -1,0 +1,10 @@
+node_modules
+build
+public
+.cache
+.netlify
+
+.github
+
+dist
+src/index.ts

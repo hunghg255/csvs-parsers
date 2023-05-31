@@ -1,0 +1,77 @@
+{
+  "name": "csvs-parsers",
+  "version": "1.0.3",
+  "description": "",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "esmodule": "dist/index.esmodule.js",
+  "umd:main": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "umd": "./dist/index.umd.js",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.module.js"
+    }
+  },
+  "scripts": {
+    "lint": "eslint src --color",
+    "size": "npm run build && size-limit",
+    "check-types": "tsc --noEmit true",
+    "build": "del-cli 'dist/*' && microbundle build --entry src/index.ts --name csvs-parsers --tsconfig tsconfig.build.json",
+    "dev": "microbundle -w"
+  },
+  "keywords": [
+    "csv",
+    "csvParser",
+    "csvToJson",
+    "json"
+  ],
+  "author": "hunghg255",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.26.1",
+    "@size-limit/preset-small-lib": "^8.2.4",
+    "@types/needle": "^3.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "del-cli": "^5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "microbundle": "^0.15.1",
+    "prettier": "^2.8.8",
+    "size-limit": "^8.2.4",
+    "typescript": "^4.8.4"
+  },
+  "files": [
+    "dist/*.{js,mjs,ts,map}",
+    "dist/components/*.ts",
+    "dist/utils/nonce.d.ts",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/index.module.js",
+      "name": "csvParser",
+      "import": "{ csvParser }",
+      "limit": "3 KB"
+    },
+    {
+      "path": "dist/index.module.js",
+      "name": "csvToJsonb",
+      "import": "{ csvToJson }",
+      "limit": "3 KB"
+    }
+  ],
+  "dependencies": {
+    "needle": "^3.2.0"
+  }
+}
