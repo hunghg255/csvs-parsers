@@ -1,6 +1,5 @@
 import fs from 'fs';
-import needle from 'needle';
-
+import fetch from 'node-fetch';
 import { IOptions, csvParser } from './csvParser';
 
 interface ICsvToJson {
@@ -20,36 +19,40 @@ interface ICsvToJson {
  * @returns A Promise that resolves to an array of objects parsed from a CSV file located at the
  * specified path URL.
  */
-const csvToJson = ({ pathUrl, options }: ICsvToJson) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const results: any[] = [];
+const csvToJson = async ({ pathUrl, options }: ICsvToJson) => {
+  try {
+    let readableStream: fs.ReadStream | NodeJS.ReadableStream | null;
 
-      if (!pathUrl) reject(new Error('Path Url is not valid'));
+    if (!pathUrl) throw new Error('Pathname or URL is required');
 
-      let readableStream: fs.ReadStream | NodeJS.ReadableStream;
-
-      if (pathUrl.startsWith('http')) {
-        readableStream = needle.get(pathUrl);
-      } else {
-        readableStream = fs.createReadStream(pathUrl);
-      }
-
-      if (!readableStream) reject(new Error('Path Url is not valid'));
-
-      readableStream
-        .pipe(csvParser(options ?? {}))
-        .on('data', (data: any) => results.push(data))
-        .on('end', () => {
-          resolve(results);
-        })
-        .on('error', (e) => {
-          reject(e);
-        });
-    } catch (error) {
-      reject(error);
+    if (pathUrl.startsWith('http')) {
+      readableStream = await fetch(pathUrl).then((res) => res.body);
+    } else {
+      readableStream = fs.createReadStream(pathUrl);
     }
-  });
+
+    return new Promise((resolve, reject) => {
+      try {
+        if (!readableStream) throw new Error('Pathname or URL is not valid');
+
+        const results: any[] = [];
+
+        readableStream
+          .pipe(csvParser(options ?? {}))
+          .on('data', (data: any) => results.push(data))
+          .on('end', () => {
+            resolve(results);
+          })
+          .on('error', (e) => {
+            reject(e);
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  } catch (error) {
+    return error;
+  }
 };
 
 export { csvToJson };
